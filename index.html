@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝔼𝔸平台 (EastAOpenDo) - 共同打造新生态平台</title>
+    <meta name="description" content="𝔼𝔸平台(EastAOpenDo)由QuantumMoveStudio主创、ChanCraift共创、StvepX技术支持、OrientGod赞助、SFTO提供支持的新平台，致力于接入各社区并提供相关服务支持。">
+    <meta name="keywords" content="𝔼𝔸, EA平台, EastAOpenDo, QuantumMoveStudio, ChanCraift, StvepX, OrientGod, SFTO, QSCOS, 新生态平台">
+    <meta property="og:title" content="𝔼𝔸平台 (EastAOpenDo) 官网">
+    <meta property="og:description" content="𝔼𝔸平台由QuantumMoveStudio主创、ChanCraift共创、StvepX技术支持、OrientGod赞助、SFTO提供支持，与你共同打造新生态平台。">
+    <meta property="og:type" content="website">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --surface-color: #1e1e24;
+            --primary-color: #4a90e2;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border-color: #333333;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: var(--surface-color);
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #4a90e2, #50e3c2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--text-primary);
+        }
+        .timeline-container {
+            position: relative;
+            padding-left: 30px;
+        }
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--border-color);
+        }
+        .timeline-card {
+            position: relative;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .timeline-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border-color: var(--primary-color);
+        }
+        .timeline-card::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 24px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border: 2px solid var(--bg-color);
+            transform: translateX(-50%);
+        }
+        .timeline-date {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .timeline-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        .timeline-contributor {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            gap: 10px;
+        }
+        .page-btn {
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .page-btn:hover:not(:disabled) {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .page-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .copyright {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <audio id="bgm" src="https://cdn.quantumtechexplorationcenter.dpdns.org/zhyuan-65535.wav" loop preload="auto"></audio>
+    <header>
+        <h1>𝔼𝔸平台 (EastAOpenDo)</h1>
+        <p class="subtitle">由QuantumMoveStudio主创、ChanCraift共创、StvepX技术支持、OrientGod赞助、SFTO提供支持的新平台。该平台将接入各社区并提供相关服务支持，𝔼𝔸与你共同打造新生态平台。</p>
+    </header>
+    <main>
+        <h2 class="section-title">发展时间线</h2>
+        <div id="timeline" class="timeline-container"></div>
+        <div id="pagination" class="pagination"></div>
+    </main>
+    <div class="footer">
+        <p class="copyright">© <span id="year"></span> 𝔼𝔸平台(EastAOpenDo). All rights reserved.</p>
+    </div>
+    <script>
+    (function() {
+    'use strict';
+
+    const CONFIG = {
+        PRIMARY_API: 'https://quantummovestudio.dpdns.org/api/time/server',
+        FALLBACK_APIS: [
+            'https://quan.suning.com/getSysTime.do',
+            'https://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp'
+        ],
+        START_YEAR: 2026,
+        TIMEOUT: 5000
+    };
+
+    var yearEl = document.getElementById("year");
+    if (!yearEl) {
+        console.error('CopyrightYear: 未找到 #year 元素');
+        return;
+    }
+
+    function setYear(currentYear) {
+        if (currentYear === CONFIG.START_YEAR) {
+            yearEl.textContent = CONFIG.START_YEAR;
+        } else if (currentYear > CONFIG.START_YEAR) {
+            yearEl.textContent = CONFIG.START_YEAR + "-" + currentYear;
+        } else {
+            yearEl.textContent = CONFIG.START_YEAR;
+        }
+    }
+
+    function fallbackLocalYear() {
+        console.warn('CopyrightYear: 所有时间源都失败，回退到本地时间');
+        setYear(new Date().getFullYear());
+    }
+
+    function parseSuningResponse(data) {
+        if (data && data.sysTime2) {
+            return parseInt(data.sysTime2.slice(0, 4), 10);
+        }
+        return null;
+    }
+
+    function parseTaobaoResponse(data) {
+        if (data && data.data && data.data.t) {
+            return new Date(Number(data.data.t)).getFullYear();
+        }
+        return null;
+    }
+
+    function parseOwnServerResponse(data) {
+        if (data && data.datetime) {
+            var date = new Date(data.datetime);
+            if (!isNaN(date.getTime())) {
+                return date.getFullYear();
+            }
+        }
+        if (data && data.timestamp) {
+            var date = new Date(data.timestamp * 1000);
+            if (!isNaN(date.getTime())) {
+                return date.getFullYear();
+            }
+        }
+        return null;
+    }
+
+    function fetchWithTimeout(url, options, timeout) {
+        return Promise.race([
+            fetch(url, options),
+            new Promise(function(_, reject) {
+                setTimeout(function() {
+                    reject(new Error('请求超时'));
+                }, timeout);
+            })
+        ]);
+    }
+
+    function fetchOwnServer() {
+        return fetchWithTimeout(CONFIG.PRIMARY_API, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        }, CONFIG.TIMEOUT)
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            var year = parseOwnServerResponse(data);
+            if (year) {
+                console.log('CopyrightYear: 使用量方易动工作室的服务器时间', year);
+                return year;
+            }
+            throw new Error('无法解析服务器响应');
+        });
+    }
+
+    function fetchSuning() {
+        return fetchWithTimeout(CONFIG.FALLBACK_APIS[0], {
+            method: 'GET',
+            mode: 'cors'
+        }, CONFIG.TIMEOUT)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            var year = parseSuningResponse(data);
+            if (year) {
+                console.log('CopyrightYear: 使用苏宁时间', year);
+                return year;
+            }
+            throw new Error('苏宁响应解析失败');
+        });
+    }
+
+    function fetchTaobao() {
+        return fetchWithTimeout(CONFIG.FALLBACK_APIS[1], {
+            method: 'GET',
+            mode: 'cors'
+        }, CONFIG.TIMEOUT)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            var year = parseTaobaoResponse(data);
+            if (year) {
+                console.log('CopyrightYear: 使用淘宝时间', year);
+                return year;
+            }
+            throw new Error('淘宝响应解析失败');
+        });
+    }
+
+    function init() {
+        fetchOwnServer()
+            .then(setYear)
+            .catch(function(err) {
+                console.warn('量方易动工作室的服务器失败:', err.message);
+                return fetchSuning();
+            })
+            .then(setYear)
+            .catch(function(err) {
+                console.warn('苏宁失败:', err.message);
+                return fetchTaobao();
+            })
+            .then(setYear)
+            .catch(function(err) {
+                console.warn('淘宝失败:', err.message);
+                fallbackLocalYear();
+            });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+})();
+    </script>
+    <script>
+    (function() {
+        'use strict';
+
+        const BGM_KEY = 'ea_bgm_progress';
+        const audio = document.getElementById('bgm');
+        if (!audio) return;
+
+        let restored = false;
+        let playing = false;
+        let lastSave = 0;
+
+        function readProgress() {
+            try {
+                const v = parseFloat(localStorage.getItem(BGM_KEY));
+                return isNaN(v) || v < 0 ? 0 : v;
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        function saveProgress() {
+            if (!isFinite(audio.duration) || audio.duration <= 0) return;
+            let t = audio.currentTime;
+            if (t >= audio.duration - 0.5) t = 0;
+            try {
+                localStorage.setItem(BGM_KEY, String(t));
+            } catch (e) {}
+        }
+
+        function restoreProgress() {
+            if (restored) return;
+            if (!isFinite(audio.duration) || audio.duration <= 0) return;
+            restored = true;
+            const p = readProgress();
+            if (p > 0 && p < audio.duration) {
+                try {
+                    audio.currentTime = p;
+                } catch (e) {}
+            }
+        }
+
+        if (audio.readyState >= 1) {
+            restoreProgress();
+        } else {
+            audio.addEventListener('loadedmetadata', restoreProgress);
+        }
+
+        audio.addEventListener('timeupdate', function() {
+            const now = Date.now();
+            if (now - lastSave > 1000) {
+                lastSave = now;
+                saveProgress();
+            }
+        });
+
+        window.addEventListener('pagehide', saveProgress);
+        window.addEventListener('beforeunload', saveProgress);
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') saveProgress();
+        });
+
+        const events = ['pointerdown', 'mousedown', 'click', 'touchstart', 'touchmove', 'keydown', 'scroll', 'wheel', 'mousemove'];
+
+        function removeListeners() {
+            events.forEach(function(ev) {
+                window.removeEventListener(ev, onAny, true);
+            });
+        }
+
+        function startPlay() {
+            if (playing) return;
+            restoreProgress();
+            const p = audio.play();
+            if (p && typeof p.then === 'function') {
+                p.then(function() {
+                    playing = true;
+                    removeListeners();
+                }).catch(function() {});
+            } else {
+                playing = true;
+                removeListeners();
+            }
+        }
+
+        function onAny() {
+            startPlay();
+        }
+
+        events.forEach(function(ev) {
+            window.addEventListener(ev, onAny, { passive: true, capture: true });
+        });
+
+        audio.addEventListener('playing', function() {
+            playing = true;
+            removeListeners();
+        });
+
+        window.addEventListener('load', startPlay);
+        window.addEventListener('pageshow', startPlay);
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') startPlay();
+        });
+
+        startPlay();
+    })();
+    </script>
+    <script>
+    (function() {
+        'use strict';
+
+        const HISTORY_URL = 'https://cdn.quantumtechexplorationcenter.dpdns.org/EA_DevelopmentHistoryList.js';
+
+        const fallbackData = [
+            {
+                date: "2026-10-29 05:25",
+                title: "𝔼𝔸平台的域名DNS已成功从阿里云修改到Cloudflare解析！",
+                contributor: "DNS支持：Cloudflare Platform"
+            },
+            {
+                date: "2026-10-28 16:40",
+                title: "𝔼𝔸平台CAPTCHA启动成功！",
+                contributor: "代码贡献：StvepX官方"
+            },
+            {
+                date: "2026-10-28 07:28",
+                title: "𝔼𝔸平台LOGO已上线！",
+                contributor: "设计与贡献：StvepX官方"
+            },
+            {
+                date: "2026-10-28 05:25",
+                title: "𝔼𝔸平台域名注册已成功！",
+                contributor: "域名费用贡献：OrientGod官方"
+            },
+            {
+                date: "2026-10-28 04:50",
+                title: "𝔼𝔸平台时区模块(负责时间与偏移计算)代码已收到！",
+                contributor: "代码贡献：ChanCraift"
+            },
+            {
+                date: "2026-10-27 11:19",
+                title: "QSCOS团队成立！",
+                contributor: "创建者：1660144773(HR)"
+            },
+            {
+                date: "2026-10-27 10:50",
+                title: "𝔼𝔸平台计划启动！",
+                contributor: "发起者：量方易动工作室(QuantumMoveStudio)"
+            }
+        ];
+
+        let currentPage = 1;
+        const itemsPerPage = 5;
+
+        function getData() {
+            if (Array.isArray(window.EA_HISTORY_DATA) && window.EA_HISTORY_DATA.length > 0) {
+                return window.EA_HISTORY_DATA;
+            }
+            return fallbackData;
+        }
+
+        function renderTimeline(page) {
+            const timelineContainer = document.getElementById('timeline');
+            const paginationContainer = document.getElementById('pagination');
+            const data = getData();
+
+            timelineContainer.innerHTML = '';
+            paginationContainer.innerHTML = '';
+
+            const totalPages = Math.ceil(data.length / itemsPerPage);
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = data.slice(startIndex, endIndex);
+
+            pageData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'timeline-card';
+
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'timeline-date';
+                dateDiv.textContent = item.date;
+
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'timeline-title';
+                titleDiv.textContent = item.title;
+
+                const contributorDiv = document.createElement('div');
+                contributorDiv.className = 'timeline-contributor';
+                contributorDiv.textContent = item.contributor;
+
+                card.appendChild(dateDiv);
+                card.appendChild(titleDiv);
+                card.appendChild(contributorDiv);
+
+                timelineContainer.appendChild(card);
+            });
+
+            if (totalPages > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.textContent = '上一页';
+                prevBtn.disabled = page === 1;
+                prevBtn.addEventListener('click', () => {
+                    if (page > 1) {
+                        currentPage--;
+                        renderTimeline(currentPage);
+                    }
+                });
+                paginationContainer.appendChild(prevBtn);
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = `page-btn ${i === page ? 'active' : ''}`;
+                    pageBtn.textContent = i;
+                    pageBtn.addEventListener('click', () => {
+                        currentPage = i;
+                        renderTimeline(currentPage);
+                    });
+                    paginationContainer.appendChild(pageBtn);
+                }
+
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.textContent = '下一页';
+                nextBtn.disabled = page === totalPages;
+                nextBtn.addEventListener('click', () => {
+                    if (page < totalPages) {
+                        currentPage++;
+                        renderTimeline(currentPage);
+                    }
+                });
+                paginationContainer.appendChild(nextBtn);
+            }
+        }
+
+        function loadRemoteData() {
+            const script = document.createElement('script');
+            script.src = HISTORY_URL;
+            script.onload = function() {
+                currentPage = 1;
+                renderTimeline(1);
+            };
+            script.onerror = function() {
+                console.warn('EA_DevelopmentHistoryList.js 加载失败，使用内置数据');
+                currentPage = 1;
+                renderTimeline(1);
+            };
+            document.head.appendChild(script);
+        }
+
+        renderTimeline(1);
+        loadRemoteData();
+    })();
+    </script>
+</body>
+</html>
