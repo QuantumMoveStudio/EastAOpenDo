@@ -437,151 +437,167 @@
     })();
     </script>
     <script>
-    (function() {
-        'use strict';
+   (function() {
+    'use strict';
 
-        const HISTORY_URL = 'https://cdn.quantumtechexplorationcenter.dpdns.org/EA_DevelopmentHistoryList.js';
+    const HISTORY_URLS = [
+        'https://cdn.quantumtechexplorationcenter.dpdns.org/EA_DevelopmentHistoryList.js',
+        'https://quantummovestudio-overseascdn.github.io/EACDN/EA_DevelopmentHistoryList.js'
+    ];
+    const SCRIPT_TIMEOUT = 8000;
+    const fallbackData = [];
 
-        const fallbackData = [
-            {
-                date: "2026-10-29 05:25",
-                title: "𝔼𝔸平台的域名DNS已成功从阿里云修改到Cloudflare解析！",
-                contributor: "DNS支持：Cloudflare Platform"
-            },
-            {
-                date: "2026-10-28 16:40",
-                title: "𝔼𝔸平台CAPTCHA启动成功！",
-                contributor: "代码贡献：StvepX官方"
-            },
-            {
-                date: "2026-10-28 07:28",
-                title: "𝔼𝔸平台LOGO已上线！",
-                contributor: "设计与贡献：StvepX官方"
-            },
-            {
-                date: "2026-10-28 05:25",
-                title: "𝔼𝔸平台域名注册已成功！",
-                contributor: "域名费用贡献：OrientGod官方"
-            },
-            {
-                date: "2026-10-28 04:50",
-                title: "𝔼𝔸平台时区模块(负责时间与偏移计算)代码已收到！",
-                contributor: "代码贡献：ChanCraift"
-            },
-            {
-                date: "2026-10-27 11:19",
-                title: "QSCOS团队成立！",
-                contributor: "创建者：1660144773(HR)"
-            },
-            {
-                date: "2026-10-27 10:50",
-                title: "𝔼𝔸平台计划启动！",
-                contributor: "发起者：量方易动工作室(QuantumMoveStudio)"
-            }
-        ];
+    let currentPage = 1;
+    const itemsPerPage = 5;
+    let loading = false;
+    let loaded = false;
 
-        let currentPage = 1;
-        const itemsPerPage = 5;
-
-        function getData() {
-            if (Array.isArray(window.EA_HISTORY_DATA) && window.EA_HISTORY_DATA.length > 0) {
-                return window.EA_HISTORY_DATA;
-            }
-            return fallbackData;
+    function getData() {
+        if (Array.isArray(window.EA_HISTORY_DATA) && window.EA_HISTORY_DATA.length > 0) {
+            return window.EA_HISTORY_DATA;
         }
+        return fallbackData;
+    }
 
-        function renderTimeline(page) {
-            const timelineContainer = document.getElementById('timeline');
-            const paginationContainer = document.getElementById('pagination');
-            const data = getData();
+    function renderTimeline(page) {
+        const timelineContainer = document.getElementById('timeline');
+        const paginationContainer = document.getElementById('pagination');
+        const data = getData();
 
-            timelineContainer.innerHTML = '';
-            paginationContainer.innerHTML = '';
+        timelineContainer.innerHTML = '';
+        paginationContainer.innerHTML = '';
 
-            const totalPages = Math.ceil(data.length / itemsPerPage);
-            const startIndex = (page - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const pageData = data.slice(startIndex, endIndex);
+        const totalPages = Math.ceil(data.length / itemsPerPage);
+        const startIndex = (page - 1) * itemsPerPage;
+        const pageData = data.slice(startIndex, startIndex + itemsPerPage);
 
-            pageData.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'timeline-card';
+        pageData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'timeline-card';
 
-                const dateDiv = document.createElement('div');
-                dateDiv.className = 'timeline-date';
-                dateDiv.textContent = item.date;
+            const dateDiv = document.createElement('div');
+            dateDiv.className = 'timeline-date';
+            dateDiv.textContent = item.date;
 
-                const titleDiv = document.createElement('div');
-                titleDiv.className = 'timeline-title';
-                titleDiv.textContent = item.title;
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'timeline-title';
+            titleDiv.textContent = item.title;
 
-                const contributorDiv = document.createElement('div');
-                contributorDiv.className = 'timeline-contributor';
-                contributorDiv.textContent = item.contributor;
+            const contributorDiv = document.createElement('div');
+            contributorDiv.className = 'timeline-contributor';
+            contributorDiv.textContent = item.contributor;
 
-                card.appendChild(dateDiv);
-                card.appendChild(titleDiv);
-                card.appendChild(contributorDiv);
+            card.appendChild(dateDiv);
+            card.appendChild(titleDiv);
+            card.appendChild(contributorDiv);
+            timelineContainer.appendChild(card);
+        });
 
-                timelineContainer.appendChild(card);
+        if (totalPages > 1) {
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'page-btn';
+            prevBtn.textContent = '上一页';
+            prevBtn.disabled = page === 1;
+            prevBtn.addEventListener('click', () => {
+                if (page > 1) { currentPage--; renderTimeline(currentPage); }
             });
+            paginationContainer.appendChild(prevBtn);
 
-            if (totalPages > 1) {
-                const prevBtn = document.createElement('button');
-                prevBtn.className = 'page-btn';
-                prevBtn.textContent = '上一页';
-                prevBtn.disabled = page === 1;
-                prevBtn.addEventListener('click', () => {
-                    if (page > 1) {
-                        currentPage--;
-                        renderTimeline(currentPage);
-                    }
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === page ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderTimeline(currentPage);
                 });
-                paginationContainer.appendChild(prevBtn);
-
-                for (let i = 1; i <= totalPages; i++) {
-                    const pageBtn = document.createElement('button');
-                    pageBtn.className = `page-btn ${i === page ? 'active' : ''}`;
-                    pageBtn.textContent = i;
-                    pageBtn.addEventListener('click', () => {
-                        currentPage = i;
-                        renderTimeline(currentPage);
-                    });
-                    paginationContainer.appendChild(pageBtn);
-                }
-
-                const nextBtn = document.createElement('button');
-                nextBtn.className = 'page-btn';
-                nextBtn.textContent = '下一页';
-                nextBtn.disabled = page === totalPages;
-                nextBtn.addEventListener('click', () => {
-                    if (page < totalPages) {
-                        currentPage++;
-                        renderTimeline(currentPage);
-                    }
-                });
-                paginationContainer.appendChild(nextBtn);
+                paginationContainer.appendChild(pageBtn);
             }
-        }
 
-        function loadRemoteData() {
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'page-btn';
+            nextBtn.textContent = '下一页';
+            nextBtn.disabled = page === totalPages;
+            nextBtn.addEventListener('click', () => {
+                if (page < totalPages) { currentPage++; renderTimeline(currentPage); }
+            });
+            paginationContainer.appendChild(nextBtn);
+        }
+    }
+
+    function loadScript(url) {
+        return new Promise(function(resolve, reject) {
             const script = document.createElement('script');
-            script.src = HISTORY_URL;
-            script.onload = function() {
-                currentPage = 1;
-                renderTimeline(1);
-            };
-            script.onerror = function() {
-                console.warn('EA_DevelopmentHistoryList.js 加载失败，使用内置数据');
-                currentPage = 1;
-                renderTimeline(1);
-            };
-            document.head.appendChild(script);
-        }
+            let settled = false;
 
-        renderTimeline(1);
-        loadRemoteData();
-    })();
+            const timer = setTimeout(function() {
+                if (settled) return;
+                settled = true;
+                script.remove();
+                reject(new Error('加载超时: ' + url));
+            }, SCRIPT_TIMEOUT);
+
+            function finish(fn, arg) {
+                if (settled) return;
+                settled = true;
+                clearTimeout(timer);
+                script.remove();
+                fn(arg);
+            }
+
+            script.src = url;
+            script.async = true;
+
+            script.onload = function() {
+                if (Array.isArray(window.EA_HISTORY_DATA) && window.EA_HISTORY_DATA.length > 0) {
+                    finish(resolve, window.EA_HISTORY_DATA);
+                } else {
+                    finish(reject, new Error('脚本已执行但未写入有效数据: ' + url));
+                }
+            };
+
+            script.onerror = function() {
+                finish(reject, new Error('网络/加载失败: ' + url));
+            };
+
+            document.head.appendChild(script);
+        });
+    }
+
+    function tryLoad(index) {
+        if (index >= HISTORY_URLS.length) {
+            return Promise.reject(new Error('所有数据源均失败'));
+        }
+        const url = HISTORY_URLS[index];
+        console.log('EA: 尝试加载 ' + url);
+        return loadScript(url).catch(function(err) {
+            console.warn('EA: ' + url + ' 失败 (' + err.message + ')，尝试下一个');
+            return tryLoad(index + 1);
+        });
+    }
+
+    function loadRemoteData() {
+        if (loading || loaded) return;
+        loading = true;
+        tryLoad(0)
+            .then(function() {
+                loaded = true;
+                loading = false;
+                currentPage = 1;
+                renderTimeline(1);
+                console.log('EA: 远程数据加载成功');
+            })
+            .catch(function(err) {
+                loading = false;
+                console.warn('EA: ' + err.message + '，使用内置保底数据');
+                currentPage = 1;
+                renderTimeline(1);
+            });
+    }
+
+    renderTimeline(1);
+    loadRemoteData();
+})();
     </script>
 </body>
 </html>
