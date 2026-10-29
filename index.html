@@ -173,7 +173,7 @@
     <div class="footer">
         <p class="copyright">© <span id="year"></span> 𝔼𝔸平台(EastAOpenDo). All rights reserved.</p>
     </div>
-    <script>
+<script>
     (function() {
     'use strict';
 
@@ -328,114 +328,153 @@
     }
 
 })();
-    </script>
-    <script>
-    (function() {
-        'use strict';
+</script>
+<script>
+(function() {
+    'use strict';
 
-        const BGM_KEY = 'ea_bgm_progress';
-        const audio = document.getElementById('bgm');
-        if (!audio) return;
+    const BGM_KEY = 'ea_bgm_progress';
+    const BGM_SOURCES = [
+        'https://cdn.quantumtechexplorationcenter.dpdns.org/zhyuan-65535.wav',
+        'https://quantummovestudio-overseascdn.github.io/EACDN/zhyuan-65535.wav'
+    ];
 
-        let restored = false;
-        let playing = false;
-        let lastSave = 0;
+    const audio = document.getElementById('bgm');
+    if (!audio) return;
 
-        function readProgress() {
-            try {
-                const v = parseFloat(localStorage.getItem(BGM_KEY));
-                return isNaN(v) || v < 0 ? 0 : v;
-            } catch (e) {
-                return 0;
-            }
+    let bgmIndex = 0;
+    let switching = false;
+    let restored = false;
+    let playing = false;
+    let lastSave = 0;
+
+    function readProgress() {
+        try {
+            const v = parseFloat(localStorage.getItem(BGM_KEY));
+            return isNaN(v) || v < 0 ? 0 : v;
+        } catch (e) {
+            return 0;
         }
+    }
 
-        function saveProgress() {
-            if (!isFinite(audio.duration) || audio.duration <= 0) return;
-            let t = audio.currentTime;
-            if (t >= audio.duration - 0.5) t = 0;
+    function saveProgress() {
+        if (!isFinite(audio.duration) || audio.duration <= 0) return;
+        let t = audio.currentTime;
+        if (t >= audio.duration - 0.5) t = 0;
+        try {
+            localStorage.setItem(BGM_KEY, String(t));
+        } catch (e) {}
+    }
+
+    function restoreProgress() {
+        if (restored) return;
+        if (!isFinite(audio.duration) || audio.duration <= 0) return;
+        restored = true;
+        const p = readProgress();
+        if (p > 0 && p < audio.duration) {
             try {
-                localStorage.setItem(BGM_KEY, String(t));
+                audio.currentTime = p;
             } catch (e) {}
         }
+    }
 
-        function restoreProgress() {
-            if (restored) return;
-            if (!isFinite(audio.duration) || audio.duration <= 0) return;
-            restored = true;
-            const p = readProgress();
-            if (p > 0 && p < audio.duration) {
+    if (audio.readyState >= 1) {
+        restoreProgress();
+    } else {
+        audio.addEventListener('loadedmetadata', restoreProgress);
+    }
+
+    audio.addEventListener('timeupdate', function() {
+        const now = Date.now();
+        if (now - lastSave > 1000) {
+            lastSave = now;
+            saveProgress();
+        }
+    });
+
+    window.addEventListener('pagehide', saveProgress);
+    window.addEventListener('beforeunload', saveProgress);
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden') saveProgress();
+    });
+
+    const events = ['pointerdown', 'mousedown', 'click', 'touchstart', 'touchmove', 'keydown', 'scroll', 'wheel', 'mousemove'];
+
+    function removeListeners() {
+        events.forEach(function(ev) {
+            window.removeEventListener(ev, onAny, true);
+        });
+    }
+
+    function startPlay() {
+        if (playing) return;
+        restoreProgress();
+        const p = audio.play();
+        if (p && typeof p.then === 'function') {
+            p.then(function() {
+                playing = true;
+                removeListeners();
+            }).catch(function() {});
+        } else {
+            playing = true;
+            removeListeners();
+        }
+    }
+
+    function onAny() {
+        startPlay();
+    }
+
+    events.forEach(function(ev) {
+        window.addEventListener(ev, onAny, { passive: true, capture: true });
+    });
+
+    audio.addEventListener('playing', function() {
+        playing = true;
+        removeListeners();
+    });
+
+    window.addEventListener('load', startPlay);
+    window.addEventListener('pageshow', startPlay);
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') startPlay();
+    });
+
+    audio.addEventListener('error', function() {
+        if (switching) return;
+        if (bgmIndex >= BGM_SOURCES.length - 1) return;
+        switching = true;
+
+        const wasPlaying = playing || !audio.paused;
+        let savedTime = 0;
+        try {
+            if (isFinite(audio.currentTime)) savedTime = audio.currentTime;
+        } catch (e) {}
+        if (!savedTime) savedTime = readProgress();
+
+        bgmIndex++;
+        audio.src = BGM_SOURCES[bgmIndex];
+        audio.load();
+
+        audio.addEventListener('loadedmetadata', function() {
+            if (savedTime > 0 && isFinite(audio.duration) && savedTime < audio.duration) {
                 try {
-                    audio.currentTime = p;
+                    audio.currentTime = savedTime;
                 } catch (e) {}
             }
-        }
-
-        if (audio.readyState >= 1) {
-            restoreProgress();
-        } else {
-            audio.addEventListener('loadedmetadata', restoreProgress);
-        }
-
-        audio.addEventListener('timeupdate', function() {
-            const now = Date.now();
-            if (now - lastSave > 1000) {
-                lastSave = now;
-                saveProgress();
-            }
-        });
-
-        window.addEventListener('pagehide', saveProgress);
-        window.addEventListener('beforeunload', saveProgress);
-        document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === 'hidden') saveProgress();
-        });
-
-        const events = ['pointerdown', 'mousedown', 'click', 'touchstart', 'touchmove', 'keydown', 'scroll', 'wheel', 'mousemove'];
-
-        function removeListeners() {
-            events.forEach(function(ev) {
-                window.removeEventListener(ev, onAny, true);
-            });
-        }
-
-        function startPlay() {
-            if (playing) return;
-            restoreProgress();
-            const p = audio.play();
-            if (p && typeof p.then === 'function') {
-                p.then(function() {
+            switching = false;
+            if (wasPlaying || playing) {
+                audio.play().then(function() {
                     playing = true;
                     removeListeners();
                 }).catch(function() {});
-            } else {
-                playing = true;
-                removeListeners();
             }
-        }
+        }, { once: true });
+    });
 
-        function onAny() {
-            startPlay();
-        }
-
-        events.forEach(function(ev) {
-            window.addEventListener(ev, onAny, { passive: true, capture: true });
-        });
-
-        audio.addEventListener('playing', function() {
-            playing = true;
-            removeListeners();
-        });
-
-        window.addEventListener('load', startPlay);
-        window.addEventListener('pageshow', startPlay);
-        document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === 'visible') startPlay();
-        });
-
-        startPlay();
-    })();
-    </script>
+    startPlay();
+})();
+</script>
     <script>
    (function() {
     'use strict';
